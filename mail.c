@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include "db.h"
+#include "encr.h"
+#include "valdt.h"
 
 int main(void){
   char* name, pass, sel, message, passphrase, destination;

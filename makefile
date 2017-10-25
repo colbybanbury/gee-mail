@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -lsqlite3
 EXEC = mail
 DB = mail.db
-OBJS = db_init.o
+OBJS = db.o
 
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^

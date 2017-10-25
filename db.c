@@ -11,7 +11,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
   return 0;
 }
 
-int initialize_database(void){
+int init_db(void){
   sqlite3* db;
   char *zErrMsg = 0;
   int rc = sqlite3_open("mail.db", &db);
@@ -44,6 +44,3 @@ MESSAGE text, PASSPHRASE text);"
   return 0;
 }
 
-int main(void){
-  initialize_database();
-}
