@@ -78,7 +78,7 @@ int register_user(char* user, char* pass, int len_u, int len_p){
   } 
 
   sqlite3_close(db);
-
+  free(query);
   return 0;
 }
 
