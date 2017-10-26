@@ -6,12 +6,12 @@ int init_db(void);
   initialize databases if the do not exist, return exit code */
 
 
-char** get_message_signatures(char* user);
+char** get_message_signatures(char* user, int len_u);
 /*
   return pointer to array of message signatures for a user */
 
 
-int get_message_count(char* user);
+int get_message_count(char* user, int len_u);
 /*
   return number of messages addressed to a user*/
 
@@ -27,12 +27,12 @@ int send_message(char* sender, char* receiver, char* message, char* passphrase, 
   add message to db with given parameters and hashed passphrase */
 
 
-int check_user(char* user);
+int check_user(char* user, int len_u);
 /*
  verify if given user exists in user table */
 
 
-char* get_passcode(char* user);
+char* get_passcode(char* user, int len_u);
 /*
  return hashed passcode for a given user */
 
