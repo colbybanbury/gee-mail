@@ -1,11 +1,17 @@
 CC = gcc
-CFLAGS = -lsqlite3
+CFLAGS = -g
+CLINKS = -lsqlite3
 EXEC = mail
 DB = mail.db
 OBJS = db.o
+MAIN = mail.o
+TEST = test.o
 
-$(EXEC): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+$(EXEC): $(OBJS) $(MAIN)
+	$(CC) $(CFLAGS) $(CLINKS) -o $@ $^
 
 clean:
-	rm $(EXEC) $(OBJS) $(DB)
+	rm $(EXEC) $(OBJS) $(DB) $(TEST)
+
+test: $(OBJS) $(TEST)
+	$(CC) $(CFLAGS) $(CLINKS) -o $@ $^

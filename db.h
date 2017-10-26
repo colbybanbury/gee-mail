@@ -35,6 +35,9 @@ char* get_passcode(char* user);
 /*
  return hashed passcode for a given user */
 
+int register_user(char* user, char* pass, int len_u, int len_p);
+/*
+  create a new user entry with given username and password */
 
 
 #endif
