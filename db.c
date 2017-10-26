@@ -47,7 +47,9 @@ MESSAGE text, PASSPHRASE text);"
   return 0;
 }
 
-int register_user(char* user, char* pass, int len_u, int len_p){
+int register_user(char* user, char* pass){
+  int len_u = strlen(user);
+  int len_p = strlen(pass);
   sqlite3* db;
   char *zErrMsg = 0;
   int rc = sqlite3_open(DB_NAME, &db);
@@ -82,8 +84,11 @@ int register_user(char* user, char* pass, int len_u, int len_p){
   return 0;
 }
 
-int send_message(char* sender, char* receiver, char* message, char* passphrase, \
-                 int len_s, int len_r, int len_m, int len_p){
+int send_message(char* sender, char* receiver, char* message, char* passphrase){
+  int len_s = strlen(sender);
+  int len_r = strlen(receiver);
+  int len_m = strlen(message);
+  int len_p = strlen(passphrase);
   sqlite3* db;
   char *zErrMsg = 0;
   int rc = sqlite3_open(DB_NAME, &db);
