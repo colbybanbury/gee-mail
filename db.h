@@ -21,7 +21,8 @@ char* get_message(int id);
   return the message contents for a message with this id num*/
 
 
-int send_message(char* message, char* passphrase, char* sender, char* receiver);
+int send_message(char* sender, char* receiver, char* message, char* passphrase, \
+                 int len_s, int len_r, int len_m, int len_p);
 /*
   add message to db with given parameters and hashed passphrase */
 
