@@ -1,9 +1,24 @@
 #include <stdio.h>
+#include <assert.h>
 #include "db.h"
 
+int test_db(void);
+
 int main(void){
-  init_db();
-  register_user("hello", "null");
-  send_message("Collin", "Colby", "write more tests", "testtest");
+  test_db();
+  return 0;
+}
+
+int test_db(void){
+  assert(init_db() == 0);
+  assert(register_user("Colby", "somehash") == 0);
+  assert(register_user("Collin", "otherhash") == 0);
+  assert(send_message("Collin", "Colby", "write more tests", "a hash") == 0);
+  assert(get_message_count("Colby") == 1);
+  assert(get_message_count("Collin") == 0);
+  assert(send_message("Collin", "Colby", "make this compile", "a hash") == 0);
+  assert(get_message_count("Colby") == 2);
+  assert(get_message_count("Collin") == 0);
+  
   return 0;
 }

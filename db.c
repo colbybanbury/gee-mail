@@ -131,3 +131,44 @@ int send_message(char* sender, char* receiver, char* message, char* passphrase){
   return 0;
   
 }
+
+int count_results(void *data, int argc, char **argv, char **azColName){
+  (*(int*)data)++;
+  return 0;
+}
+
+int get_message_count(char* user){
+  sqlite3* db;
+  char *zErrMsg = 0;
+  int rc = sqlite3_open(DB_NAME, &db);
+
+  if( rc ){
+    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+    return 1;
+  }
+
+  char* query = (char*)malloc(39 + strlen(user) + 3);
+  // example: select * from messages where receiver="username";\0
+  //          |-----------------39------------------|-len_u--|3-|
+
+  strcpy(query, "select * from MESSAGES where receiver=\"");
+  strcat(query, user);
+  strcat(query, "\";");
+
+  printf("%s\n", query);
+
+  int num_messages = 0;
+  rc = sqlite3_exec(db, query, count_results, &num_messages, &zErrMsg);
+  if( rc != SQLITE_OK ){
+    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+    sqlite3_free(zErrMsg);
+  }else{
+    fprintf(stdout, "Messages counted successfully\n");
+  }
+  printf("number of messages: %i\n", num_messages);
+  free(query);
+  sqlite3_close(db);  
+  return num_messages;
+  
+}
