@@ -10,6 +10,9 @@ int main(void){
 }
 
 int test_db(void){
+  if(remove("mail.db")){
+    printf("File does not exist \n");
+  }
   assert(init_db() == 0);
   assert(register_user("Colby", "somehash") == 0);
   assert(register_user("Collin", "otherhash") == 0);
