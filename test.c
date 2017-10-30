@@ -22,6 +22,8 @@ int test_db(void){
   assert(send_message("Collin", "Colby", "make this compile", "a hash") == 0);
   assert(get_message_count("Colby") == 2);
   assert(get_message_count("Collin") == 0);
+  assert(check_user("Colby") == 1);
+  assert(check_user("Dave") == 0);
   
   return 0;
 }

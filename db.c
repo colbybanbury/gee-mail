@@ -15,6 +15,11 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
   return 0;
 }
 
+static int check_user_callback(void *exists, int argc, char **argv, char **azColName){
+  *(int*)exists = (int)argv[0][0] -48; //48 is ascii 0
+  return 0;
+}
+
 int init_db(void){
   sqlite3* db;
   char *zErrMsg = 0;
@@ -82,6 +87,39 @@ int register_user(char* user, char* pass){
   sqlite3_close(db);
   free(query);
   return 0;
+}
+
+int check_user(char* user){
+  sqlite3* db;
+  char *zErrMsg = 0;
+  int rc = sqlite3_open(DB_NAME, &db);
+  if( rc ){
+    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+    return 0;
+  }
+  int len_u = strlen(user);
+  char* query = (char*)malloc((51 + len_u + 13));
+  // example: "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAMsE = "user" LIMIT 1);"\0
+  //          |----------51----------------------------------|--len_u--|----13-
+  strcpy(query, "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAME = \"");
+  strcat(query, user);
+  strcat(query, "\" LIMIT 1);");
+
+  printf("%s\n", query);
+
+  int exists = 0;
+
+  rc = sqlite3_exec(db, query, check_user_callback, &exists, &zErrMsg);
+
+  printf("%d\n", exists);
+  if(!exists){
+    printf("user does not exist\n");
+  }
+  else{printf("user found\n");}
+  sqlite3_close(db);
+  free(query);
+  return exists;
 }
 
 int send_message(char* sender, char* receiver, char* message, char* passphrase){
