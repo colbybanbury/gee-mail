@@ -210,3 +210,60 @@ int get_message_count(char* user){
   return num_messages;
   
 }
+
+char*** get_message_signatures(char* user){
+  sqlite3* db;
+  char *zErrMsg = 0;
+  sqlite3_stmt *res;
+  int rc = sqlite3_open(DB_NAME, &db);
+
+  if( rc ){
+    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+    
+    return (char***)1;
+  }
+
+  char* query = (char*)malloc(39 + strlen(user) + 3);
+  // example: select * from messages where receiver="username";\0
+  //          |-----------------39------------------|-len_u--|3-|
+
+  strcpy(query, "select * from MESSAGES where receiver=\"");
+  strcat(query, user);
+  strcat(query, "\";");
+
+  printf("%s\n", query);
+  int num_messages = get_message_count(user);
+  char*** messages = (char***)malloc(num_messages*sizeof(char**));
+  rc = sqlite3_prepare_v2(db, query, -1, &res, 0);
+
+  if( rc != SQLITE_OK ){
+    fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+
+    return (char***)1;
+  }
+  int i=0;
+  do{
+    rc = sqlite3_step(res);
+    messages[i] = (char**)malloc(sqlite3_column_count(res)*sizeof(char*));
+    int j;
+    size_t field_size;
+    for(j=0;j<sqlite3_column_count(res);j++){
+      field_size = sqlite3_column_bytes(res, j); // calculate size of entry
+      messages[i][j] = (char*)malloc(field_size+1); // allocate space in result arr
+      memcpy(messages[i][j], sqlite3_column_text(res,j), field_size);
+      // copy message to result arr
+      messages[i][j][field_size] = 0;
+      // add null term
+      printf("%s\t", messages[i][j]);      
+      
+    }
+    printf("\n");
+    i++;
+  } while( rc == SQLITE_ROW );
+    
+  sqlite3_finalize(res);
+  sqlite3_close(db);
+  return messages;
+}

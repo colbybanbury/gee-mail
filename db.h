@@ -6,7 +6,7 @@ int init_db(void);
   initialize databases if the do not exist, return exit code */
 
 
-char** get_message_signatures(char* user);
+char*** get_message_signatures(char* user);
 /*
   return pointer to array of message signatures for a user */
 
