@@ -2,18 +2,23 @@
 #include "db.h"
 #include "encr.h"
 #include "valdt.h"
+#include "mail.h"
 
 int main(void){
-  char* name, pass, sel, message, passphrase, destination;
+  char* name, pass, message, passphrase, destination;
   init_db();
   printf("Press s to sign in. Press r to register.\n");
-  gets(sel);
-  if(sel=='r'){
+  
+  char sel[2];
+
+  fgets(sel, 2, stdin);
+  if(strcmp(sel,"r")==0){
     name = reg();
   }else{
     name = sign_in();
   }
-  
+
+  /*
   disp_messages();
   printf("r to read, w to write\n");
   gets(sel);
@@ -42,6 +47,7 @@ int main(void){
   }
     
   return 0;
+  */
 }
 
 char* sign_in(){
@@ -53,7 +59,7 @@ char* sign_in(){
       printf("no matching username\n");
       printf("enter your username or type r to register:");
       fgets(username, 50, stdin);
-      if(username == 'r'){
+      if(strcmp(username, "r") == 0){
         return reg();
       }
   }
@@ -77,7 +83,7 @@ char* reg(){
       printf("that username is already in use\n");
       printf("enter a new username or type s to sign into an existing account:");
       fgets(username, 50, stdin);
-      if(username == 's'){
+      if(strcmp(username, 's') == 0){
         return sign_in();
       }
   }
