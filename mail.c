@@ -9,10 +9,11 @@ int main(void){
   printf("Press s to sign in. Press r to register.\n");
   gets(sel);
   if(sel=='r'){
-    reg();
+    name = reg();
   }else{
-    sign_in(name, pass);
+    name = sign_in();
   }
+  
   disp_messages();
   printf("r to read, w to write\n");
   gets(sel);
@@ -53,8 +54,7 @@ char* sign_in(){
       printf("enter your username or type r to register:");
       fgets(username, 50, stdin);
       if(username == 'r'){
-        reg();
-        return 0;
+        return reg();
       }
   }
   printf("enter your password:");
@@ -64,6 +64,30 @@ char* sign_in(){
     printf("enter your password:");
     fgets(username, 50, stdin);
   }
-  memset(password, '0', 50)
+  memset(password, '0', 50);
+  return username;
+}
+
+char* reg(){
+  char username[50];
+  char password[50];
+  printf("enter a new username:");
+  fgets(username, 50, stdin);
+  while(check_user(username)){
+      printf("that username is already in use\n");
+      printf("enter a new username or type s to sign into an existing account:");
+      fgets(username, 50, stdin);
+      if(username == 's'){
+        return sign_in();
+      }
+  }
+  printf("enter a new password:");
+  fgets(password, 50, stdin);
+  
+  if(register_user(username, hash(password)) == 0)
+  {
+    printf("Succesully registered. Welcome!");
+  }
+  memset(password, '0', 50);
   return username;
 }
