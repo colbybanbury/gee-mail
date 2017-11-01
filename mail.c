@@ -9,11 +9,11 @@ int main(void){
   printf("Press s to sign in. Press r to register.\n");
   gets(sel);
   if(sel=='r'){
-    reg();
+    name = reg();
   }else{
-    sign_in();
+    name = sign_in();
   }
-
+  
   disp_messages();
   printf("r to read, w to write\n");
   gets(sel);
