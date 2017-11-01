@@ -14,9 +14,15 @@ int main(void){
 }
 
 int test_encr(void){
-  assert(strcmp("af",bin_to_hex_char(0b10101111))==0);
-  assert(strcmp("00",bin_to_hex_char(0b00000000))==0);
-  assert(strcmp("4c",bin_to_hex_char(0b01001100))==0);
+  char* tmp = bin_to_hex_char(0b10101111);
+  assert('a' == tmp[0]);
+  assert('f' == tmp[1]);
+  tmp = bin_to_hex_char(0b00000000);
+  assert('0' == tmp[0]);
+  assert('0' == tmp[1]);
+  tmp = bin_to_hex_char(0b01001100);
+  assert('4' == tmp[0]);
+  assert('c' == tmp[1]);
 
   assert(strcmp("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
                 hash_to_string(hash("hello"))) == 0);
