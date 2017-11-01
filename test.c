@@ -2,13 +2,26 @@
 #include <assert.h>
 #include <string.h>
 #include "db.h"
+#include "encr.h"
 
 int test_db(void);
+int test_encr(void);
 
 int main(void){
   test_db();
+  test_encr();
   return 0;
 }
+
+int test_encr(void){
+  char* message = hash("hello");
+  assert(strcmp("af",bin_to_hex_char(0b10101111))==0);
+  assert(strcmp("00",bin_to_hex_char(0b00000000))==0);
+  assert(strcmp("4c",bin_to_hex_char(0b01001100))==0);
+  
+  return 0;
+}
+
 
 int test_db(void){
   if(remove("mail.db")){

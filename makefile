@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g
-CLINKS = -lsqlite3
+CLINKS = -lsqlite3 -lgcrypt
 EXEC = mail
 DB = mail.db
-OBJS = db.o
+OBJS = db.o encr.o
 MAIN = mail.o
 TEST = test.o
 
