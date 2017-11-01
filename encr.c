@@ -16,11 +16,11 @@ char* hash(char* pass){
       pass,
       txtLength);
 
-  printf("hashBuffer = ");
+  //  printf("hashBuffer = ");
   for( i=0;i<32;i++ ){
-    printf("%02X", (unsigned char)hashBuffer[i]);
+    //    printf("%02X", (unsigned char)hashBuffer[i]);
   }
-  printf("\n");
+  //  printf("\n");
   return hashBuffer;
 }
 
@@ -49,6 +49,6 @@ char* hash_to_string(char* hash){
     memcpy(dest+(2*i), result, 2);
   }
   dest[len*2] = 0;
-  printf("%s\n",dest);
+  //  printf("%s\n",dest);
   return dest;
 }

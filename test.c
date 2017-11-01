@@ -14,10 +14,18 @@ int main(void){
 }
 
 int test_encr(void){
-  char* message = hash("hello");
   assert(strcmp("af",bin_to_hex_char(0b10101111))==0);
   assert(strcmp("00",bin_to_hex_char(0b00000000))==0);
   assert(strcmp("4c",bin_to_hex_char(0b01001100))==0);
+
+  assert(strcmp("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+                hash_to_string(hash("hello"))) == 0);
+  assert(strcmp("f6952d6eef555ddd87aca66e56b91530222d6e318414816f3ba7cf5bf694bf0f",
+                hash_to_string(hash("penis"))) == 0);
+  assert(strcmp("cc4c1c16512a1c5e62b007e041c6fa6e677ab2a5ae06f6833aeb7551a713ff9d",
+                hash_to_string(hash("this was colby's fault"))) == 0);
+
+  printf("hashes hashed successfully\n");
   
   return 0;
 }
