@@ -49,6 +49,9 @@ int test_db(void){
   assert(check_user("Colby") == 1);
   assert(check_user("Dave") == 0);
 
+  assert(check_password(receiver, pass) == 1);
+  assert(check_password(receiver, "wrongpass") == 0);
+
   assert(send_message(sender, receiver, message1, hash) == 0);
   assert(get_message_count(receiver) == 1);
   assert(get_message_count(sender) == 0);

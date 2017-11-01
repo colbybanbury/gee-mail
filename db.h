@@ -30,7 +30,9 @@ int check_user(char* user);
 /*
  verify if given user exists in user table */
 
-
+int check_password(char* username, char* password);
+/*
+ verfiy that the given username and password match in the database*/
 char* get_passcode(char* user);
 /*
  return hashed passcode for a given user */

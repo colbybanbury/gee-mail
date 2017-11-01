@@ -11,7 +11,7 @@ int main(void){
   if(sel=='r'){
     reg();
   }else{
-    sign_in();
+    sign_in(name, pass);
   }
   disp_messages();
   printf("r to read, w to write\n");
@@ -41,4 +41,29 @@ int main(void){
   }
     
   return 0;
+}
+
+char* sign_in(){
+  char username[50];
+  char password[50];
+  printf("enter your username:");
+  fgets(username, 50, stdin);
+  while(!check_user(username)){
+      printf("no matching username\n");
+      printf("enter your username or type r to register:");
+      fgets(username, 50, stdin);
+      if(username == 'r'){
+        reg();
+        return 0;
+      }
+  }
+  printf("enter your password:");
+  fgets(password, 50, stdin);
+  while(!check_password(username, hash(password))){
+    printf("incorrect password\n");
+    printf("enter your password:");
+    fgets(username, 50, stdin);
+  }
+  memset(password, '0', 50)
+  return username;
 }

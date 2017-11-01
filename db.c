@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <string.h>
 #include "db.h"
+#include "encr.h"
 
 #define DB_NAME "mail.db"
 
@@ -16,6 +17,11 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 }
 
 static int check_user_callback(void *exists, int argc, char **argv, char **azColName){
+  *(int*)exists = (int)argv[0][0] -48; //48 is ascii 0
+  return 0;
+}
+
+static int check_password_callback(void *exists, int argc, char **argv, char **azColName){
   *(int*)exists = (int)argv[0][0] -48; //48 is ascii 0
   return 0;
 }
@@ -111,6 +117,42 @@ int check_user(char* user){
   int exists = 0;
 
   rc = sqlite3_exec(db, query, check_user_callback, &exists, &zErrMsg);
+
+  printf("%d\n", exists);
+  if(!exists){
+    printf("user does not exist\n");
+  }
+  else{printf("user found\n");}
+  sqlite3_close(db);
+  free(query);
+  return exists;
+}
+
+int check_password(char* username, char* password){
+  sqlite3* db;
+  char *zErrMsg = 0;
+  int rc = sqlite3_open(DB_NAME, &db);
+  if( rc ){
+    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+    return 0;
+  }
+  int len_u = strlen(username);
+  int len_p = strlen(password);
+  char* query = (char*)malloc((51 + len_u + 18 + len_p + 12));
+  // example: "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAMsE = "user" AND PASSWORD = "pasword" LIMIT 1);"\0
+  //          |----------51--------------------------------------|--len_u--|---18--------|--len_p|--12---
+  strcpy(query, "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAME = \"");
+  strcat(query, username);
+  strcat(query, "\" AND PASSWORD = \"");
+  strcat(query, password);
+  strcat(query, "\"LIMIT 1);");
+
+  printf("%s\n", query);
+
+  int exists = 0;
+
+  rc = sqlite3_exec(db, query, check_password_callback, &exists, &zErrMsg);
 
   printf("%d\n", exists);
   if(!exists){
