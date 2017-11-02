@@ -86,7 +86,7 @@ char* reg(){
   
   if(register_user(username, hash(password)) == 0)
   {
-    printf("Succesully registered. Welcome!");
+    printf("Successfully registered. Welcome!");
   }
   memset(password, '0', 50);
   return username;
