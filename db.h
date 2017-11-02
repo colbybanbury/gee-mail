@@ -1,8 +1,9 @@
 #ifndef DB_H
 #define DB_H
 
-int init_db(void);
+int init_db(int is_test);
 /*
+  if is_test==1 then test_mail.db is initialized. Otherwise it's mail.db
   initialize databases if the do not exist, return exit code */
 
 

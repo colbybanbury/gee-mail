@@ -5,7 +5,7 @@
 #include "db.h"
 #include "encr.h"
 
-#define DB_NAME "mail.db"
+char* DB_NAME = "mail.db";
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
   int i;
@@ -26,9 +26,12 @@ static int check_password_callback(void *exists, int argc, char **argv, char **a
   return 0;
 }
 
-int init_db(void){
+int init_db(int is_test){//if is_test == 1 then initializes to a different db
   sqlite3* db;
   char *zErrMsg = 0;
+  if(is_test==1){
+    DB_NAME = "test_mail.db";
+  }
   int rc = sqlite3_open(DB_NAME, &db);
   if( rc ){
     fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));

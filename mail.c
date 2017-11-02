@@ -5,7 +5,7 @@
 
 int main(void){
   char* name, pass, sel, message, passphrase, destination;
-  init_db();
+  init_db(0);
   printf("Press s to sign in. Press r to register.\n");
   gets(sel);
   if(sel=='r'){

@@ -38,7 +38,7 @@ int test_encr(void){
 
 
 int test_db(void){
-  if(remove("mail.db")){
+  if(remove("test_mail.db")){
     printf("File does not exist \n");
   }
   char* sender = "Collin";
@@ -47,7 +47,7 @@ int test_db(void){
   char* pass = "somepass";
   char* message1 = "write more tests";
   char* message2 = "make this compile";
-  assert(init_db() == 0);
+  assert(init_db(1) == 0);
 
   assert(register_user(receiver, pass) == 0);
   assert(register_user(sender, pass) == 0);
