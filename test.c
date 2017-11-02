@@ -32,6 +32,18 @@ int test_encr(void){
                 hash_to_string(hash("this was colby's fault"))) == 0);
 
   printf("hashes hashed successfully\n");
+
+  char* message = "colby is";
+  char* pass = "bad";
+  char* encr_m = encrypt(message, pass);
+  char* uecr_m = unencrypt(encr_m, pass);
+  assert(strcmp(message, uecr_m) == 0);
+  assert(strcmp("this is a test",
+                unencrypt(encrypt("this is a test", "message"), "message")) == 0);
+  assert(strcmp("borroworrob",
+                unencrypt(encrypt("borroworrob", "definitely rob"),
+                          "definitely rob")) == 0);
+  
   
   return 0;
 }

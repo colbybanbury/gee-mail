@@ -15,7 +15,11 @@ char* unencrypt(char* encr_message, char* passphrase);
   len_p */
 
 char* bin_to_hex_char(char input);
-
+/*
+  convert a single byte to two ascii characters
+ */
 char* hash_to_string(char* hash);
-
+/*
+  convert a hash from binary byte-wise representation to ascii hex 
+ */
 #endif
