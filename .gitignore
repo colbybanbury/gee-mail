@@ -4,3 +4,4 @@ mail
 *.o
 *.out
 test
+*.dSYM

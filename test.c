@@ -24,6 +24,8 @@ int test_encr(void){
   assert('4' == tmp[0]);
   assert('c' == tmp[1]);
 
+  free(tmp);
+  
   assert(strcmp("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
                 hash_to_string(hash("hello"))) == 0);
   assert(strcmp("f6952d6eef555ddd87aca66e56b91530222d6e318414816f3ba7cf5bf694bf0f",
@@ -43,7 +45,8 @@ int test_encr(void){
   assert(strcmp("borroworrob",
                 unencrypt(encrypt("borroworrob", "definitely rob"),
                           "definitely rob")) == 0);
-  
+  free(encr_m);
+  free(uecr_m);
   
   return 0;
 }
@@ -86,9 +89,13 @@ int test_db(void){
   for(i=0;i<2;i++){
     for(j=0;j<5;j++){
       assert(strcmp(messages_actual[i][j], messages_expected[i][j]) == 0);
+      free(messages_actual[i][j]);
     }
+    free(messages_actual[i]);
   }
+  free(messages_actual);
   printf("Messages retrieved successfully\n");
+
   
   return 0;
 }
