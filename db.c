@@ -78,10 +78,10 @@ int register_user(char* user, char* pass){
   //          |----------26-------------|--len_u--|4-|len_p|-5-|
 
   strcpy(query, "insert into USERS values (\"");
-  strcat(query, user);
-  strcat(query, "\", \"");
-  strcat(query, pass);
-  strcat(query, "\");");
+  strncat(query, user, len_u);
+  strncat(query, "\", \"", 4);
+  strncat(query, pass, len_p);
+  strncat(query, "\");", 5);
 
   printf("%s\n", query);
 
@@ -112,8 +112,8 @@ int check_user(char* user){
   // example: "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAMsE = "user" LIMIT 1);"\0
   //          |----------51----------------------------------|--len_u--|----13-
   strcpy(query, "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAME = \"");
-  strcat(query, user);
-  strcat(query, "\" LIMIT 1);");
+  strncat(query, user, len_u);
+  strncat(query, "\" LIMIT 1);", 13);
 
   printf("%s\n", query);
 
@@ -146,10 +146,10 @@ int check_password(char* username, char* password){
   // example: "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAMsE = "user" AND PASSWORD = "pasword" LIMIT 1);"\0
   //          |----------51--------------------------------------|--len_u--|---18--------|--len_p|--12---
   strcpy(query, "SELECT EXISTS(SELECT 1 FROM USERS WHERE USERNAME = \"");
-  strcat(query, username);
-  strcat(query, "\" AND PASSWORD = \"");
-  strcat(query, password);
-  strcat(query, "\"LIMIT 1);");
+  strncat(query, username, len_u);
+  strncat(query, "\" AND PASSWORD = \"", 18);
+  strncat(query, password, len_p);
+  strncat(query, "\"LIMIT 1);", 12);
 
   printf("%s\n", query);
 
@@ -190,14 +190,14 @@ int send_message(char* sender, char* receiver, char* message, char* passphrase){
 
   strcpy(query, "insert into MESSAGES (\"sender\", \"receiver\", \"message\", \
  \"passphrase\") values (\"");
-  strcat(query, sender);
-  strcat(query, "\", \"");
-  strcat(query, receiver);
-  strcat(query, "\", \"");
-  strcat(query, message);
-  strcat(query, "\", \"");
-  strcat(query, passphrase);
-  strcat(query, "\");");
+  strncat(query, sender, len_s);
+  strncat(query, "\", \"", 4);
+  strncat(query, receiver, len_r);
+  strncat(query, "\", \"", 4);
+  strncat(query, message, len_m);
+  strncat(query, "\", \"", 4);
+  strncat(query, passphrase, len_p);
+  strncat(query, "\");", 5);
 
   printf("%s\n", query);
 
@@ -231,13 +231,15 @@ int get_message_count(char* user){
     return 1;
   }
 
-  char* query = (char*)malloc(39 + strlen(user) + 3);
+  size_t len_u = strlen(user);
+  
+  char* query = (char*)malloc(39 + len_u + 3);
   // example: select * from messages where receiver="username";\0
   //          |-----------------39------------------|-len_u--|3-|
 
   strcpy(query, "select * from MESSAGES where receiver=\"");
-  strcat(query, user);
-  strcat(query, "\";");
+  strncat(query, user, len_u);
+  strncat(query, "\";", 3);
 
   printf("%s\n", query);
 
@@ -269,13 +271,15 @@ char*** get_message_signatures(char* user){
     return (char***)1;
   }
 
-  char* query = (char*)malloc(39 + strlen(user) + 3);
+  size_t len_u = strlen(user);
+  
+  char* query = (char*)malloc(39 + len_u + 3);
   // example: select * from messages where receiver="username";\0
   //          |-----------------39------------------|-len_u--|3-|
 
   strcpy(query, "select * from MESSAGES where receiver=\"");
-  strcat(query, user);
-  strcat(query, "\";");
+  strncat(query, user, len_u);
+  strncat(query, "\";", 3);
 
   printf("%s\n", query);
   int num_messages = get_message_count(user);
