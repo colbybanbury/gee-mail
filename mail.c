@@ -2,6 +2,7 @@
 #include "db.h"
 #include "encr.h"
 #include "valdt.h"
+#include "mail.h"
 
 int main(void){
   char* name, pass, sel, message, passphrase, destination;
@@ -38,7 +39,7 @@ int main(void){
     gets(passphrase);
     message = encrypt(message,passphrase);
     passphrase = hash(passphrase);
-    send_message(message,passphrase);
+    send_message(name, destination, message,passphrase);
   }
     
   return 0;
