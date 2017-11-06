@@ -188,12 +188,12 @@ char* unencrypt(char* message, char* passphrase){
                                   message,
                                   len_m);
   if( gcryError ){
-    printf("gcry_cipher_encrypt failed:  %s/%s\n",
+    printf("gcry_cipher_decrypt failed:  %s/%s\n",
            gcry_strsource(gcryError),
            gcry_strsource(gcryError));
     return 0;
   }
-  printf("gcry_cipher_encrypt worked\n");
+  printf("gcry_cipher_decrypt worked\n");
 
   printf("encBuffer = ");
   for(index=0;index<len_m;index++){

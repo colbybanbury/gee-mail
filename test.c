@@ -39,6 +39,7 @@ int test_encr(void){
   char* pass = "bad";
   char* encr_m = encrypt(message, pass);
   char* uecr_m = unencrypt(encr_m, pass);
+  printf("%s", uecr_m);
   assert(strcmp(message, uecr_m) == 0);
   assert(strcmp("this is a test",
                 unencrypt(encrypt("this is a test", "message"), "message")) == 0);
