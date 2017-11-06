@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include <stdlib.h>
 #include "db.h"
 #include "encr.h"
 
@@ -18,11 +17,9 @@ int test_encr(void){
   char* tmp = bin_to_hex_char(0b10101111);
   assert('a' == tmp[0]);
   assert('f' == tmp[1]);
-  free(tmp);
   tmp = bin_to_hex_char(0b00000000);
   assert('0' == tmp[0]);
   assert('0' == tmp[1]);
-  free(tmp);
   tmp = bin_to_hex_char(0b01001100);
   assert('4' == tmp[0]);
   assert('c' == tmp[1]);
@@ -42,7 +39,7 @@ int test_encr(void){
   char* pass = "bad";
   char* encr_m = encrypt(message, pass);
   char* uecr_m = unencrypt(encr_m, pass);
-  printf("%s", uecr_m);
+  
   assert(strcmp(message, uecr_m) == 0);
   assert(strcmp("this is a test",
                 unencrypt(encrypt("this is a test", "message"), "message")) == 0);

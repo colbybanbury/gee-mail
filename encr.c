@@ -104,7 +104,7 @@ char* encrypt(char* message, char* passphrase){
   }
   printf("gcry_cipher_setiv worked\n");
 
-  char * encBuffer = malloc(len_m);
+  char * encBuffer = malloc(len_m + 1); // Plus one for null-terminator
 
   gcryError = gcry_cipher_encrypt(gcryCipherHd,
                                   encBuffer,
@@ -118,6 +118,8 @@ char* encrypt(char* message, char* passphrase){
     return 0;
   }
   printf("gcry_cipher_encrypt worked\n");
+
+  encBuffer[len_m] = 0;
 
   printf("encBuffer = ");
   for(index=0;index<len_m;index++){
@@ -180,7 +182,7 @@ char* unencrypt(char* message, char* passphrase){
   }
   printf("gcry_cipher_setiv worked\n");
 
-  char * encBuffer = malloc(len_m);
+  char * encBuffer = malloc(len_m + 1); // Plus one to hold null-terminator
 
   gcryError = gcry_cipher_decrypt(gcryCipherHd,
                                   encBuffer,
@@ -195,10 +197,13 @@ char* unencrypt(char* message, char* passphrase){
   }
   printf("gcry_cipher_decrypt worked\n");
 
+  encBuffer[len_m] = 0;
+
   printf("encBuffer = ");
   for(index=0;index<len_m;index++){
     printf("%02X", (unsigned char)encBuffer[index]);
   }
+
   printf("\n");
   return encBuffer;
   
