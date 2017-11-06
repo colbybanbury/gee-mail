@@ -4,6 +4,7 @@
 #include "valdt.h"
 #include "mail.h"
 
+
 char* reg(){
   char username[50];
   char password[50];
