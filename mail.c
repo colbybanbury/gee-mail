@@ -4,8 +4,6 @@
 #include "valdt.h"
 #include "mail.h"
 
-char*reg();
-char* sign_in();
 
 char* reg(){
   char username[50];
@@ -23,37 +21,9 @@ char* reg(){
   printf("enter a new password:");
   fgets(password, 50, stdin);
   
-<<<<<<< HEAD
-  disp_messages();
-  printf("r to read, w to write\n");
-  gets(sel);
-  if(sel == 'r'){
-    printf("enter a message ID\n");
-    int id;
-    gets(id);
-    gets(passphrase);
-    if(validate(id, passphrase)){
-      message = decode(id, passphrase);
-      printf("%s\n",message);
-    }else{
-      printf("invalid passphrase\n");
-    }
-  }else{
-    gets(destination);
-    while(!check_user(destination)){
-      printf("no matching username\n");
-      gets(destination);
-    }
-    gets(message);
-    gets(passphrase);
-    message = encrypt(message,passphrase);
-    passphrase = hash(passphrase);
-    send_message(name, destination, message,passphrase);
-=======
   if(register_user(username, hash(password)) == 0)
   {
     printf("Successfully registered. Welcome!");
->>>>>>> b851577ef7023832bdebfacb7fa632e55754b1f5
   }
   memset(password, '0', 50);
   return username;
