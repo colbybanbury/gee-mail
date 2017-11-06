@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
 #include "db.h"
 #include "encr.h"
 
@@ -40,6 +41,7 @@ int test_encr(void){
   char* message = "colby is";
   char* pass = "bad";
   char* encr_m = encrypt(message, pass);
+  printf("encrypted\n");
   char* uecr_m = unencrypt(encr_m, pass);
   
   assert(strcmp(message, uecr_m) == 0);

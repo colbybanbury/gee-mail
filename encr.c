@@ -71,7 +71,11 @@ char* encrypt(char* message, char* passphrase){
   printf("%s\n", key);
   
   
-  char* iniVector = "AAAAAAAA"; // 8 bytes (why?)
+  char* iniVector = malloc(9); // 9 bytes (8 for nonce and 1 for null term)
+  gcry_create_nonce(iniVector, 8);
+  iniVector[8] = 0;
+  printf("%s\n", iniVector);
+
 
   gcryError = gcry_cipher_open(&gcryCipherHd,
                                GCRY_CIPHER_SALSA20,
@@ -104,7 +108,8 @@ char* encrypt(char* message, char* passphrase){
   }
   printf("gcry_cipher_setiv worked\n");
 
-  char * encBuffer = malloc(len_m + 1); // Plus one for null-terminator
+
+  char * encBuffer = malloc(len_m + 9);
 
   gcryError = gcry_cipher_encrypt(gcryCipherHd,
                                   encBuffer,
@@ -126,6 +131,15 @@ char* encrypt(char* message, char* passphrase){
     printf("%02X", (unsigned char)encBuffer[index]);
   }
   printf("\n");
+  strcat(encBuffer, iniVector);	//concat nonce to end of encypted message
+
+  printf("encBuffer + nonce = ");
+  for(index=0;index<len_m+9;index++){
+    printf("%02X", (unsigned char)encBuffer[index]);
+  }
+  printf("\n");
+  free(key);
+  free(iniVector);
   return encBuffer;
   
 }
@@ -136,7 +150,7 @@ char* unencrypt(char* message, char* passphrase){
   gcry_cipher_hd_t gcryCipherHd;
   size_t index,i;
   size_t len_p = strlen(passphrase) < 32 ? strlen(passphrase) : 32;
-  size_t len_m = strlen(message);
+  size_t len_m = strlen(message) - 8;//length of message minus the nonce
   char* key = malloc(33);
   
   char* placeholder = "$%&'()*+,-./0123456789:;<=>?@ABC";
@@ -149,7 +163,15 @@ char* unencrypt(char* message, char* passphrase){
   printf("%s\n", key);
   
   
-  char* iniVector = "AAAAAAAA"; // 8 bytes (why?)
+  char* iniVector = malloc(8); // 8 bytes (why?)
+  for(i=0; i<8; i++){
+  	iniVector[i] = message[len_m+i];
+  }
+  char* message_minus_nonce = malloc(len_m+1);
+   for(i=0; i<len_m; i++){
+  	message_minus_nonce[i] = message[i];
+  }
+  message_minus_nonce[len_m] = 0;
 
   gcryError = gcry_cipher_open(&gcryCipherHd,
                                GCRY_CIPHER_SALSA20,
@@ -187,7 +209,7 @@ char* unencrypt(char* message, char* passphrase){
   gcryError = gcry_cipher_decrypt(gcryCipherHd,
                                   encBuffer,
                                   len_m,
-                                  message,
+                                  message_minus_nonce,
                                   len_m);
   if( gcryError ){
     printf("gcry_cipher_decrypt failed:  %s/%s\n",
@@ -205,6 +227,9 @@ char* unencrypt(char* message, char* passphrase){
   }
 
   printf("\n");
+  free(key);
+  free(iniVector);
+  free(message_minus_nonce);
   return encBuffer;
   
 }
