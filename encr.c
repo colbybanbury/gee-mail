@@ -74,7 +74,6 @@ char* encrypt(char* message, char* passphrase){
   char* iniVector = malloc(9); // 9 bytes (8 for nonce and 1 for null term)
   gcry_create_nonce(iniVector, 8);
   iniVector[8] = 0;
-  printf("%s\n", iniVector);
 
 
   gcryError = gcry_cipher_open(&gcryCipherHd,
