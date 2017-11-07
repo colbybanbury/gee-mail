@@ -5,6 +5,8 @@
 #include "db.h"
 #include "encr.h"
 
+#define DEBUG
+
 char* DB_NAME = "mail.db";
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
@@ -53,7 +55,9 @@ MESSAGE text, PASSPHRASE text);"
       fprintf(stderr, "SQL error: %s\n", zErrMsg);
       sqlite3_free(zErrMsg);
     }else{
+      #ifdef DEBUG
       fprintf(stdout, "Table created successfully\n");
+      #endif
     }
   }
   sqlite3_close(db);
@@ -83,14 +87,18 @@ int register_user(char* user, char* pass){
   strncat(query, pass, len_p);
   strncat(query, "\");", 5);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
 
   rc = sqlite3_exec(db, query, callback, 0, &zErrMsg);
   if( rc != SQLITE_OK ){
     fprintf(stderr, "SQL error: %s\n", zErrMsg);
     sqlite3_free(zErrMsg);
   }else{
+    #ifdef DEBUG
     fprintf(stdout, "User added successfully\n");
+    #endif
   } 
 
   sqlite3_close(db);
@@ -115,17 +123,22 @@ int check_user(char* user){
   strncat(query, user, len_u);
   strncat(query, "\" LIMIT 1);", 13);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
 
   int exists = 0;
 
   rc = sqlite3_exec(db, query, check_user_callback, &exists, &zErrMsg);
 
+  #ifdef DEBUG
   printf("%d\n", exists);
   if(!exists){
     printf("user does not exist\n");
   }
   else{printf("user found\n");}
+  #endif
+
   sqlite3_close(db);
   free(query);
   return exists;
@@ -151,17 +164,22 @@ int check_password(char* username, char* password){
   strncat(query, password, len_p);
   strncat(query, "\"LIMIT 1);", 12);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
 
   int exists = 0;
 
   rc = sqlite3_exec(db, query, check_password_callback, &exists, &zErrMsg);
 
+  #ifdef DEBUG
   printf("%d\n", exists);
   if(!exists){
     printf("user does not exist\n");
   }
   else{printf("user found\n");}
+  #endif
+
   sqlite3_close(db);
   free(query);
   return exists;
@@ -199,14 +217,18 @@ int send_message(char* sender, char* receiver, char* message, char* passphrase){
   strncat(query, passphrase, len_p);
   strncat(query, "\");", 5);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
 
   rc = sqlite3_exec(db, query, callback, 0, &zErrMsg);
   if( rc != SQLITE_OK ){
     fprintf(stderr, "SQL error: %s\n", zErrMsg);
     sqlite3_free(zErrMsg);
   }else{
+    #ifdef DEBUG
     fprintf(stdout, "Message sent successfully\n");
+    #endif
   }
 
   free(query);
@@ -241,7 +263,9 @@ int get_message_count(char* user){
   strncat(query, user, len_u);
   strncat(query, "\";", 3);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
 
   int num_messages = 0;
   rc = sqlite3_exec(db, query, count_results, &num_messages, &zErrMsg);
@@ -249,9 +273,15 @@ int get_message_count(char* user){
     fprintf(stderr, "SQL error: %s\n", zErrMsg);
     sqlite3_free(zErrMsg);
   }else{
+    #ifdef DEBUG
     fprintf(stdout, "Messages counted successfully\n");
+    #endif
   }
+
+  #ifdef DEBUG
   printf("number of messages: %i\n", num_messages);
+  #endif
+
   free(query);
   sqlite3_close(db);  
   return num_messages;
@@ -281,7 +311,10 @@ char*** get_message_signatures(char* user){
   strncat(query, user, len_u);
   strncat(query, "\";", 3);
 
+  #ifdef DEBUG
   printf("%s\n", query);
+  #endif
+
   int num_messages = get_message_count(user);
   char*** messages = (char***)malloc(num_messages*sizeof(char**));
   rc = sqlite3_prepare_v2(db, query, -1, &res, 0);
@@ -305,10 +338,16 @@ char*** get_message_signatures(char* user){
       // copy message to result arr
       messages[i][j][field_size] = 0;
       // add null term
-      printf("%s\t", messages[i][j]);      
+      #ifdef DEBUG
+      printf("%s\t", messages[i][j]);
+      #endif      
       
     }
+
+    #ifdef DEBUG
     printf("\n");
+    #endif
+
     i++;
   } while( rc == SQLITE_ROW );
     
