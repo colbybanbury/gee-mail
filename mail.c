@@ -55,30 +55,41 @@ char* sign_in(){
 
 
 int main(void){
-  char* name, pass, sel, message, passphrase, destination;
+  char* name;
+  char* pass;
+  char* sel;
+  char* message;
+  char* passphrase;
+  char* destination;
   init_db(0);
   printf("Press s to sign in. Press r to register.\n");
-  fgets(sel, 1, stdin);
-  if(sel=='r'){
+
+  sel = (char*) malloc(2);
+
+  fgets(sel, 2, stdin);
+
+  printf("%s", sel);
+  
+  if(strcmp(sel,"r")){
     name = reg();
   }else{
     name = sign_in();
   }
   
-  disp_messages();
+  //disp_messages();
   printf("r to read, w to write\n");
   fgets(sel, 1, stdin);
-  if(sel == 'r'){
+  if((strcmp(sel, "r")== 0)) {
     printf("enter a message ID\n");
     int id;
     fgets(id, 20, stdin);
     fgets(passphrase, 20, stdin);
-    if(validate(id, passphrase)){
-      message = decode(id, passphrase);
-      printf("%s\n",message);
-    }else{
+    //if(validate(id, passphrase)){
+    //  message = decode(id, passphrase);
+    //  printf("%s\n",message);
+    //}else{
       printf("invalid passphrase\n");
-    }
+   // }
   }else{
     fgets(destination, 20, stdin);
     while(!check_user(destination)){
