@@ -285,7 +285,7 @@ int get_message_count(char* user){
   return num_messages;
   
 }
-
+/*
 char* validate(char* user, int id, char* passphrase){
   sqlite3* db;
   char *zErrMsg = 0;
@@ -356,14 +356,17 @@ char* validate(char* user, int id, char* passphrase){
    // copy message to result arr
   db_password[field_size] = 0;
 
+  unencypted_db_password = unencrypt(db_password, passphrase);
+
+  if(strcmp(unencrypted_db_password, passphrase))
   
 
 
   sqlite3_finalize(res);
   sqlite3_close(db);
-  return messages;
+  return returnMessage;
 }
-
+*/
 char*** get_message_signatures(char* user){
   sqlite3* db;
   char *zErrMsg = 0;

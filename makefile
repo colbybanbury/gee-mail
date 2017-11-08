@@ -14,5 +14,5 @@ clean:
 	rm $(EXEC) $(OBJS) $(DB) $(TEST)
 
 test: $(OBJS) $(TEST)
-	$(CC) $(CFLAGS) -o $@ $^ $(CLINKS)
+	$(CC) $(CFLAGST) -o $@ $^ $(CLINKS)
 
