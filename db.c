@@ -286,6 +286,84 @@ int get_message_count(char* user){
   
 }
 
+char* validate(char* user, int id, char* passphrase){
+  sqlite3* db;
+  char *zErrMsg = 0;
+  sqlite3_stmt *res;
+  int rc = sqlite3_open(DB_NAME, &db);
+
+  if( rc ){
+    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+    
+    return (char***)1;
+  }
+
+  size_t len_u = strlen(user);
+  
+  char* query = (char*)malloc(39 + len_u + 3);
+  // example: select * from messages where receiver="username";\0
+  //          |-----------------39------------------|-len_u--|3-|
+
+  char* idString = itoa(id);
+  size_t len_id = strlen(idString);
+
+  strcpy(query, "select * from MESSAGES where receiver=\"");
+  strncat(query, user, len_u);
+  strncat(query, "\" AND ID=\"", 10);
+  strncat(query, idString, len_id);
+  strncat(query, "\"LIMIT 1);", 12);
+
+  #ifdef DEBUG
+  printf("%s\n", query);
+  #endif
+
+  // check to see if there is a message for specified user with specified id
+  int num_messages = 0;
+  rc = sqlite3_exec(db, query, count_results, &num_messages, &zErrMsg);
+  if( rc != SQLITE_OK ){
+    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+    sqlite3_free(zErrMsg);
+  }
+
+  if(num_messages == 0){
+    return("Message ID incorrect");
+  }
+
+  rc = sqlite3_prepare_v2(db, query, -1, &res, 0);
+
+  if( rc != SQLITE_OK ){
+    fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(db));
+    sqlite3_close(db);
+
+    return (char*)1;
+  }
+  
+  rc = sqlite3_step(res);
+
+
+  char* returnMessage;
+
+  char* db_password;
+  db_password = (char*)malloc(sqlite3_column_bytes(res, 4));
+    
+
+  size_t field_size;
+
+  field_size = sqlite3_column_bytes(res, 4); // calculate size of password in db
+  
+  memcpy(db_password, sqlite3_column_text(res,4), field_size);
+   // copy message to result arr
+  db_password[field_size] = 0;
+
+  
+
+
+  sqlite3_finalize(res);
+  sqlite3_close(db);
+  return messages;
+}
+
 char*** get_message_signatures(char* user){
   sqlite3* db;
   char *zErrMsg = 0;
