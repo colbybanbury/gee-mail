@@ -5,8 +5,6 @@
 #include "db.h"
 #include "encr.h"
 
-#define DEBUG
-
 char* DB_NAME = "mail.db";
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
