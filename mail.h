@@ -9,5 +9,7 @@ char* reg();
 /*
     Prompt the user to enter a unique username and password, and add entry to db */
 
-
+void disp_messages(char* name);
+/*
+    Display all messages that the current user can open. */
 #endif
