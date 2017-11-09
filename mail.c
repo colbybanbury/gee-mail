@@ -107,10 +107,6 @@ int main(void){
   }else{
     name = sign_in();
   }
-  disp_messages(name);
-  printf("r to read, w to write, or q to quit\n");
-  getline(&sel, &selSize, stdin);
-  sel[strcspn(sel, "\n")] = 0;
 
   passphrase = (char*) malloc (sizeof(char) * 20);
   destination = (char*) malloc (sizeof(char) * 20);
@@ -123,7 +119,15 @@ int main(void){
   int messageSize = sizeof(message);
   int idStringSize = sizeof(idString);
 
+  printf("=== Messages ===\n");
+  disp_messages(name);
+  printf("================\n");
+
   while(strcmp(sel, "q") != 0){
+    printf("r to read, w to write, or q to quit\n");
+    getline(&sel, &selSize, stdin);
+    sel[strcspn(sel, "\n")] = 0;
+
     if((strcmp(sel, "r")== 0)) {
       printf("Enter a message ID: ");
 
@@ -136,7 +140,7 @@ int main(void){
       getline(&passphrase, &passphraseSize, stdin);
       passphrase[strcspn(passphrase, "\n")] = 0;
 
-      printf("\n%s\n", get_message(name, id, passphrase));
+      printf("\n%s\n\n", get_message(name, id, passphrase));
     }else{
 
       printf("Enter user to send message to: ");
@@ -161,7 +165,11 @@ int main(void){
       passphrase = hash(passphrase);
       send_message(name, destination, message, passphrase);
     }
+
+    printf("=== Messages ===\n");
     disp_messages(name);
+    printf("================\n");
+
     printf("r to read, w to write, or q to quit\n");
 
     getline(&sel, &selSize, stdin);
@@ -172,6 +180,7 @@ int main(void){
   return 0;
 }
 
-char* getUserInput(){
+//returns a correctly sized return string
+char* getUserInput(int desiredSize){
 
 }

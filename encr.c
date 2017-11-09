@@ -277,8 +277,8 @@ char* unencrypt(char* message, char* passphrase){
     printf("%02X", (unsigned char)encBuffer[index]);
   }
   printf("\n");
-  #endif
   printf("%s\n", encBuffer);
+  #endif
   free(key);
   free(nonce);
   free(message_minus_nonce);
