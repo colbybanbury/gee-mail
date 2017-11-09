@@ -79,10 +79,17 @@ char* encrypt(char* message, char* passphrase){
   #endif
   
   
-  char* iniVector = malloc(9); // 9 bytes (8 for nonce and 1 for null term)
-  gcry_create_nonce(iniVector, 8);
-  iniVector[8] = 0;
-
+  char* nonce = malloc(9); // 9 bytes (8 for nonce and 1 for null term)
+  gcry_create_nonce(nonce, 8);
+  printf("nonce is ");
+  for(i = 0; i <8; i++){
+  	printf("%02X", (unsigned char)nonce[i]);
+  	if(nonce[i] == 0){
+  		nonce[i] = 2;
+  	}
+  }
+  nonce[8] = 0;
+  printf("\n");
 
   gcryError = gcry_cipher_open(&gcryCipherHd,
                                GCRY_CIPHER_SALSA20,
@@ -110,7 +117,7 @@ char* encrypt(char* message, char* passphrase){
   printf("gcry_cipher_setkey worked\n");
   #endif
 
-  gcryError = gcry_cipher_setiv(gcryCipherHd, iniVector, 8);
+  gcryError = gcry_cipher_setiv(gcryCipherHd, nonce, 8);
   if( gcryError ){
     printf("gcry_cipher_setiv failed:  %s/%s\n",
            gcry_strsource(gcryError),
@@ -122,7 +129,7 @@ char* encrypt(char* message, char* passphrase){
   #endif
 
 
-  char * encBuffer = malloc(len_m + 9);
+  char * encBuffer = malloc(len_m +1);
 
   gcryError = gcry_cipher_encrypt(gcryCipherHd,
                                   encBuffer,
@@ -149,19 +156,30 @@ char* encrypt(char* message, char* passphrase){
   printf("\n");
   #endif
 
-  strcat(encBuffer, iniVector);	//concat nonce to end of encypted message
+  char* encMessage = malloc(len_m+10);
+
+  encMessage[0] = len_m;
+
+  for(i = 0; i< 8; i++){
+    encMessage[i+1] = nonce[i];
+  }
+  for(i = 0; i< len_m; i++){
+    encMessage[i+9] = encBuffer[i];
+  }
+  //concat nonce to beginning of encypted message
+  encMessage[len_m + 9] = 0;
 
   #ifdef DEBUG
-  printf("encBuffer + nonce = ");
+  printf("nonce + encBuffer = ");
   for(index=0;index<len_m+9;index++){
-    printf("%02X", (unsigned char)encBuffer[index]);
+    printf("%02X", (unsigned char)encMessage[index]);
   }
   printf("\n");
   #endif
 
   free(key);
-  free(iniVector);
-  return encBuffer;
+  free(nonce);
+  return encMessage;
   
 }
 
@@ -171,7 +189,7 @@ char* unencrypt(char* message, char* passphrase){
   gcry_cipher_hd_t gcryCipherHd;
   size_t index,i;
   size_t len_p = strlen(passphrase) < 32 ? strlen(passphrase) : 32;
-  size_t len_m = strlen(message) - 8;//length of message minus the nonce
+  size_t len_m = message[0];//length of message minus the nonce
   char* key = malloc(33);
   
   char* placeholder = "$%&'()*+,-./0123456789:;<=>?@ABC";
@@ -186,13 +204,14 @@ char* unencrypt(char* message, char* passphrase){
   #endif
   
   
-  char* iniVector = malloc(8); // 8 bytes (why?)
+  char* nonce = malloc(9); // 8 bytes for nonce and 1 for null term(why?)
   for(i=0; i<8; i++){
-  	iniVector[i] = message[len_m+i];
+  	nonce[i] = message[i+1];
   }
+  nonce[8] = 0;
   char* message_minus_nonce = malloc(len_m+1);
    for(i=0; i<len_m; i++){
-  	message_minus_nonce[i] = message[i];
+  	message_minus_nonce[i] = message[i+9];
   }
   message_minus_nonce[len_m] = 0;
 
@@ -222,7 +241,7 @@ char* unencrypt(char* message, char* passphrase){
   printf("gcry_cipher_setkey worked\n");
   #endif
 
-  gcryError = gcry_cipher_setiv(gcryCipherHd, iniVector, 8);
+  gcryError = gcry_cipher_setiv(gcryCipherHd, nonce, 8);
   if( gcryError ){
     printf("gcry_cipher_setiv failed:  %s/%s\n",
            gcry_strsource(gcryError),
@@ -259,9 +278,9 @@ char* unencrypt(char* message, char* passphrase){
   }
   printf("\n");
   #endif
-  
+  printf("%s\n", encBuffer);
   free(key);
-  free(iniVector);
+  free(nonce);
   free(message_minus_nonce);
   return encBuffer;
   
