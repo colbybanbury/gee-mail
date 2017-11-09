@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -D DEBUG
+CFLAGS = -g
 CLINKS = -lsqlite3 -lgcrypt
 EXEC = mail
 DB = test_mail.db

@@ -17,9 +17,9 @@ int get_message_count(char* user);
   return number of messages addressed to a user*/
 
 
-char* get_message(int id);
+char* get_message(char* name, int id, char* passphrase);
 /*
-  return the message contents for a message with this id num*/
+  return the message contents for a message with this id num, username, passphrase, and returns the appropriate message if this fails*/
 
 
 int send_message(char* sender, char* receiver, char* message, char* passphrase);
@@ -41,6 +41,11 @@ char* get_passcode(char* user);
 int register_user(char* user, char* pass);
 /*
   create a new user entry with given username and password */
+
+int message_id_check(char* user, int id);
+/*
+  checks the database to ensure the message belongs to the user */
+
 
 
 #endif

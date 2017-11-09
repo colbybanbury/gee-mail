@@ -84,7 +84,6 @@ void disp_messages(char* name){
   }
 }
 
-
 int main(void){
   char* name;
   char* pass;
@@ -126,30 +125,26 @@ int main(void){
 
   while(strcmp(sel, "q") != 0){
     if((strcmp(sel, "r")== 0)) {
-      printf("enter a message ID\n");
+      printf("Enter a message ID: ");
 
       getline(&idString, &idStringSize, stdin);
       idString[strcspn(idString, "\n")] = 0;
 
       int id = atoi(idString);
 
-      printf("enter a passphrase");
+      printf("Enter a passphrase: ");
       getline(&passphrase, &passphraseSize, stdin);
       passphrase[strcspn(passphrase, "\n")] = 0;
-      //if(validate(id, passphrase)){
-      //  message = decode(id, passphrase);
-      //  printf("%s\n",message);
-      //}else{
-        printf("invalid passphrase\n");
-    // }
+
+      printf("\n%s\n", get_message(name, id, passphrase));
     }else{
 
-      printf("Enter user to send message to.");
+      printf("Enter user to send message to: ");
       getline(&destination, &destinationSize, stdin);
       destination[strcspn(destination, "\n")] = 0;
 
       while(!check_user(destination)){
-        printf("no matching username\n");
+        printf("No matching username\n");
         getline(&destination, &destinationSize, stdin);
         destination[strcspn(destination, "\n")] = 0;
       }
@@ -177,3 +172,6 @@ int main(void){
   return 0;
 }
 
+char* getUserInput(){
+
+}

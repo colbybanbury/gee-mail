@@ -286,7 +286,7 @@ int get_message_count(char* user){
   
 }
 /*
-char* validate(char* user, int id, char* passphrase){
+char* validate_message(char* user, int id){
   sqlite3* db;
   char *zErrMsg = 0;
   sqlite3_stmt *res;
@@ -367,6 +367,8 @@ char* validate(char* user, int id, char* passphrase){
   return returnMessage;
 }
 */
+
+
 char*** get_message_signatures(char* user){
   sqlite3* db;
   char *zErrMsg = 0;
@@ -433,4 +435,24 @@ char*** get_message_signatures(char* user){
   sqlite3_finalize(res);
   sqlite3_close(db);
   return messages;
+}
+
+char* get_message(char* name, int id, char* passphrase){
+  int messageCount = get_message_count(name);
+  
+  char*** messages = get_message_signatures(name);
+
+  for(int i = 0; i < messageCount; i++){
+    char* idString;
+    idString = (char*)malloc((10*sizeof(char)));
+    sprintf(idString, "%d", id);
+
+    if(strcmp(messages[i][0], idString) == 0){
+      if(strcmp(hash_to_string(hash(passphrase)), hash_to_string(messages[i][4])) == 0){
+        return unencrypt(messages[i][3], passphrase); //returns unencrypted message
+      }
+      return "incorrect password";
+    }
+  }
+  return "invalid id";
 }
