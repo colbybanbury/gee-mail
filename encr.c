@@ -156,22 +156,23 @@ char* encrypt(char* message, char* passphrase){
   printf("\n");
   #endif
 
-  char* encMessage = malloc(len_m+10);
+  char* encMessage = malloc(len_m+11);
 
-  encMessage[0] = len_m;
+  encMessage[0] = len_m/127 + 1;
+  encMessage[1] = len_m%127;
 
   for(i = 0; i< 8; i++){
-    encMessage[i+1] = nonce[i];
+    encMessage[i+2] = nonce[i];
   }
   for(i = 0; i< len_m; i++){
-    encMessage[i+9] = encBuffer[i];
+    encMessage[i+10] = encBuffer[i];
   }
   //concat nonce to beginning of encypted message
-  encMessage[len_m + 9] = 0;
+  encMessage[len_m + 10] = 0;
 
   #ifdef DEBUG
-  printf("nonce + encBuffer = ");
-  for(index=0;index<len_m+9;index++){
+  printf("size + nonce + encBuffer = ");
+  for(index=0;index<len_m+10;index++){
     printf("%02X", (unsigned char)encMessage[index]);
   }
   printf("\n");
@@ -189,7 +190,7 @@ char* unencrypt(char* message, char* passphrase){
   gcry_cipher_hd_t gcryCipherHd;
   size_t index,i;
   size_t len_p = strlen(passphrase) < 32 ? strlen(passphrase) : 32;
-  size_t len_m = message[0];//length of message minus the nonce
+  size_t len_m = (message[0] -1)* 127 + message[1];//length of message minus the nonce
   char* key = malloc(33);
   
   char* placeholder = "$%&'()*+,-./0123456789:;<=>?@ABC";
@@ -206,12 +207,12 @@ char* unencrypt(char* message, char* passphrase){
   
   char* nonce = malloc(9); // 8 bytes for nonce and 1 for null term(why?)
   for(i=0; i<8; i++){
-  	nonce[i] = message[i+1];
+  	nonce[i] = message[i+2];
   }
   nonce[8] = 0;
   char* message_minus_nonce = malloc(len_m+1);
    for(i=0; i<len_m; i++){
-  	message_minus_nonce[i] = message[i+9];
+  	message_minus_nonce[i] = message[i+10];
   }
   message_minus_nonce[len_m] = 0;
 
