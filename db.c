@@ -451,8 +451,8 @@ char* get_message(char* name, int id, char* passphrase){
       if(strcmp(hash_to_string(hash(passphrase)), hash_to_string(messages[i][4])) == 0){
         return unencrypt(messages[i][3], passphrase); //returns unencrypted message
       }
-      return "incorrect password";
+      return "Incorrect passphrase.";
     }
   }
-  return "invalid id";
+  return "Invalid message id.";
 }

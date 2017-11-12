@@ -12,4 +12,7 @@ char* reg();
 void disp_messages(char* name);
 /*
     Display all messages that the current user can open. */
+
+void getUserInput(char* result, int size);
+
 #endif

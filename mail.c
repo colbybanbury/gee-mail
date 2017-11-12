@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "db.h"
 #include "encr.h"
 #include "valdt.h"
@@ -8,27 +10,23 @@
 char* reg(){
   char *username = (char *) malloc(sizeof(char) * 50);
   char *password = (char *) malloc(sizeof(char) * 50);
-  int usernameSize = sizeof(username);
-  int passwordSize = sizeof(password);
-  printf("enter a new username:");
-  getline(&username, &usernameSize, stdin);
-  username[strcspn(username, "\n")] = 0; //remove newline
+  int usernameSize = sizeof(char) * 50;
+  int passwordSize = sizeof(char) * 50;
+  printf("enter a new username:\n");
+  
+  getUserInput(username, usernameSize);
 
   while(check_user(username)){
       printf("that username is already in use\n");
-      printf("enter a new username or type s to sign into an existing account:");
-      getline(&username, &usernameSize, stdin);
-      username[strcspn(username, "\n")] = 0; //remove newline
+      printf("enter a new username or type s to sign into an existing account:\n");
+      getUserInput(username, usernameSize);
       if(strcmp(username, "s") == 0){
         return sign_in();
       }
   }
-  printf("enter a new password:");
-  getline(&password, &passwordSize, stdin);
+  printf("enter a new password:\n");
+  getUserInput(password, passwordSize);
 
-  password[strcspn(password, "\n")] = 0; //remove newline
-
-  
   if(register_user(username, hash(password)) == 0)
   {
     printf("Successfully registered. Welcome!");
@@ -40,31 +38,28 @@ char* reg(){
 char* sign_in(){
   char *username = (char *) malloc(sizeof(char) * 50);
   char *password = (char *) malloc(sizeof(char) * 50);
-  int usernameSize = sizeof(username);
-  int passwordSize = sizeof(password);
-  printf("enter your username:");
-  getline(&username, &usernameSize, stdin);
-  username[strcspn(username, "\n")] = 0; //remove newline
+  int usernameSize = sizeof(char) * 50;
+  int passwordSize = sizeof(char) * 50;
+  printf("Enter your username:\n");
+  getUserInput(username, usernameSize);
+
 
   while(!check_user(username)){
-      printf("no matching username\n");
-      printf("enter your username or type r to register:");
-      getline(&username, &usernameSize, stdin);
-      username[strcspn(username, "\n")] = 0; //remove newline
+      printf("No matching username\n");
+      printf("Enter your username or type r to register:\n");
+      getUserInput(username, usernameSize);
       if(strcmp(username, "r") == 0){
         return reg();
       }
   }
-  printf("enter your password:");
+  printf("Enter your password:\n");
 
-  getline(&password, &passwordSize, stdin);
-  password[strcspn(password, "\n")] = 0; //remove newline
+  getUserInput(password, passwordSize);
 
   while(!check_password(username, hash(password))){
     printf("incorrect password\n");
-    printf("enter your password:");
-    getline(&password, &passwordSize, stdin);
-    password[strcspn(password, "\n")] = 0; //remove newline
+    printf("Try again:\n");
+    getUserInput(password, passwordSize);
   }
   memset(password, '0', 50);
   return username;
@@ -94,18 +89,24 @@ int main(void){
   char* idString;
 
   init_db(0);
-  printf("Press s to sign in. Press r to register.\n");
+  printf("Press s to sign in, r to register, or q to quit.\n");
 
-  sel = (char*) malloc(1);
-  int selSize = sizeof(sel);
-  getline(&sel, &selSize, stdin);
-
-  sel[strcspn(sel, "\n")] = 0;
+  sel = (char*) malloc(2);
+  int selSize = sizeof(2);
   
-  if(strcmp(sel,"r") == 0){
-    name = reg();
-  }else{
-    name = sign_in();
+  while(1){
+    getUserInput(sel, selSize);
+    if(strcmp(sel,"r") == 0){
+      name = reg();
+      break;
+    }else if (strcmp(sel, "s") == 0){
+      name = sign_in();
+      break;
+    }else if (strcmp(sel, "q") == 0){
+      return 0;
+    }else{
+      printf("Invalid input, please enter again:\n");
+    }
   }
 
   passphrase = (char*) malloc (sizeof(char) * 20);
@@ -114,73 +115,64 @@ int main(void){
 
   idString = (char*) malloc (sizeof(char) * 20);
 
-  int passphraseSize = sizeof(passphrase);
-  int destinationSize = sizeof(destination);
-  int messageSize = sizeof(message);
-  int idStringSize = sizeof(idString);
+  int passphraseSize = sizeof(20);
+  int destinationSize = sizeof(20);
+  int messageSize = sizeof(120);
+  int idStringSize = sizeof(20);
 
-  printf("=== Messages ===\n");
-  disp_messages(name);
-  printf("================\n");
-
-  while(strcmp(sel, "q") != 0){
-    printf("r to read, w to write, or q to quit\n");
-    getline(&sel, &selSize, stdin);
-    sel[strcspn(sel, "\n")] = 0;
-
-    if((strcmp(sel, "r")== 0)) {
-      printf("Enter a message ID: ");
-
-      getline(&idString, &idStringSize, stdin);
-      idString[strcspn(idString, "\n")] = 0;
-
-      int id = atoi(idString);
-
-      printf("Enter a passphrase: ");
-      getline(&passphrase, &passphraseSize, stdin);
-      passphrase[strcspn(passphrase, "\n")] = 0;
-
-      printf("\n%s\n\n", get_message(name, id, passphrase));
-    }else{
-
-      printf("Enter user to send message to: ");
-      getline(&destination, &destinationSize, stdin);
-      destination[strcspn(destination, "\n")] = 0;
-
-      while(!check_user(destination)){
-        printf("No matching username\n");
-        getline(&destination, &destinationSize, stdin);
-        destination[strcspn(destination, "\n")] = 0;
-      }
-
-      printf("Enter message: ");
-      getline(&message, &messageSize, stdin);
-      message[strcspn(message, "\n")] = 0;
-
-      printf("Enter passphrase: ");
-      getline(&passphrase, &passphraseSize, stdin);
-      passphrase[strcspn(passphrase, "\n")] = 0;
-
-      message = encrypt(message,passphrase);
-      passphrase = hash(passphrase);
-      send_message(name, destination, message, passphrase);
-    }
-
+  while(1){
     printf("=== Messages ===\n");
     disp_messages(name);
     printf("================\n");
 
     printf("r to read, w to write, or q to quit\n");
+    getUserInput(sel, selSize);
 
-    getline(&sel, &selSize, stdin);
-    sel[strcspn(sel, "\n")] = 0;
+    if((strcmp(sel, "r")== 0)) {
+      printf("Enter a message ID:\n");
 
+      getUserInput(idString, idStringSize);
+
+      int id = atoi(idString);
+
+      printf("Enter a passphrase:\n");
+      getUserInput(passphrase, passphraseSize);
+
+      printf("\n%s\n\n", get_message(name, id, passphrase));
+    }else if(strcmp(sel, "w") == 0){
+
+      printf("Enter user to send message to:\n");
+      getUserInput(destination, destinationSize);
+
+      while(!check_user(destination)){
+        printf("No matching username\n");
+        getUserInput(destination, destinationSize);
+      }
+
+      printf("Enter message:\n");
+      getUserInput(message, messageSize);
+
+      printf("Enter passphrase:\n");
+      getUserInput(passphrase, passphraseSize);
+
+      message = encrypt(message,passphrase);
+      passphrase = hash(passphrase);
+      send_message(name, destination, message, passphrase);
+    }else if(strcmp(sel, "q") == 0){
+      return 0;
+    }else{
+      printf("Invalid input, try again.\n");
+    }
   }
+  
     
   return 0;
 }
 
 //returns a correctly sized return string
-char* getUserInput(int desiredSize){
-
+void getUserInput(char* result, int size){
+  fgets(result, size, stdin);
+  result[strcspn(result, "\n")] = 0;
+  int c;
+  while ((c = getchar()) != '\n' && c != EOF) { } //clear stdin buffer
 }
