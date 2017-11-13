@@ -29,7 +29,7 @@ char* reg(){
 
   if(register_user(username, hash(password)) == 0)
   {
-    printf("Successfully registered. Welcome!");
+    printf("Successfully registered. Welcome!\n");
   }
   memset(password, '0', 50);
   return username;
@@ -80,19 +80,13 @@ void disp_messages(char* name){
 }
 
 int main(void){
-  char* name;
-  char* pass;
-  char* sel;
-  char* message;
-  char* passphrase;
-  char* destination;
-  char* idString;
-
+  char *name, *pass, *sel, *message, *passphrase, *destination, *idString;
+  
   init_db(0);
   printf("Press s to sign in, r to register, or q to quit.\n");
 
   sel = (char*) malloc(2);
-  int selSize = sizeof(2);
+  int selSize = sizeof(char) * 2;
   
   while(1){
     getUserInput(sel, selSize);
@@ -115,10 +109,10 @@ int main(void){
 
   idString = (char*) malloc (sizeof(char) * 20);
 
-  int passphraseSize = sizeof(20);
-  int destinationSize = sizeof(20);
-  int messageSize = sizeof(120);
-  int idStringSize = sizeof(20);
+  int passphraseSize = sizeof(char) * 20;
+  int destinationSize = sizeof(char) * 20;
+  int messageSize = sizeof(char) * 20;
+  int idStringSize = sizeof(char) * 20;
 
   while(1){
     printf("=== Messages ===\n");
@@ -138,7 +132,7 @@ int main(void){
       printf("Enter a passphrase:\n");
       getUserInput(passphrase, passphraseSize);
 
-      printf("\n%s\n\n", get_message(name, id, passphrase));
+      printf("\nMessage:\n%s\n\n", get_message(name, id, passphrase));
     }else if(strcmp(sel, "w") == 0){
 
       printf("Enter user to send message to:\n");
@@ -171,8 +165,12 @@ int main(void){
 
 //returns a correctly sized return string
 void getUserInput(char* result, int size){
+  printf("Enter %d character(s) maximimum. Any additional characters will be ignored.\n", size - 1); // -1 to ignore the newline character
   fgets(result, size, stdin);
   result[strcspn(result, "\n")] = 0;
-  int c;
-  while ((c = getchar()) != '\n' && c != EOF) { } //clear stdin buffer
+  //printf("%d", strlen(result));
+  if(strlen(result) == size - 1){ //only clear input buffer when input was too long
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { } //clear stdin buffer
+  }
 }
