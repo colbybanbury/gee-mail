@@ -27,6 +27,8 @@ char* reg(){
   printf("enter a new password:\n");
   getUserInput(password, passwordSize);
 
+  printf("%s, %s", username, password);
+
   if(register_user(username, hash(password)) == 0)
   {
     printf("Successfully registered. Welcome!\n");
@@ -97,6 +99,7 @@ int main(void){
       name = sign_in();
       break;
     }else if (strcmp(sel, "q") == 0){
+      free(sel);
       return 0;
     }else{
       printf("Invalid input, please enter again:\n");
@@ -153,12 +156,18 @@ int main(void){
       passphrase = hash(passphrase);
       send_message(name, destination, message, passphrase);
     }else if(strcmp(sel, "q") == 0){
-      return 0;
+      break;
     }else{
       printf("Invalid input, try again.\n");
     }
   }
-  
+  // free memory before leaving program
+  free(name);
+  free(pass);
+  free(sel);
+  free(passphrase);
+  free(destination);
+  free(idString);
     
   return 0;
 }
@@ -166,7 +175,10 @@ int main(void){
 //returns a correctly sized return string
 void getUserInput(char* result, int size){
   printf("Enter %d character(s) maximimum. Any additional characters will be ignored.\n", size - 1); // -1 to ignore the newline character that is always present
-  fgets(result, size, stdin);
+  if(fgets(result, size, stdin) == NULL){
+    result = "";
+    printf("Fgets failed, setting string to empty");
+  }
   printf("\n");
   result[strcspn(result, "\n")] = 0;
   //printf("%d", strlen(result));
