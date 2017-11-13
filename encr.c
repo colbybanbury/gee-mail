@@ -81,12 +81,16 @@ char* encrypt(char* message, char* passphrase){
   
   char* nonce = malloc(9); // 9 bytes (8 for nonce and 1 for null term)
   gcry_create_nonce(nonce, 8);
+
+  nonce[8] = 0;
+
+  #ifdef DEBUG
   printf("nonce is ");
   for(i = 0; i <8; i++){
   	printf("%02X", (unsigned char)nonce[i]);
   }
-  nonce[8] = 0;
   printf("\n");
+  #endif
 
   gcryError = gcry_cipher_open(&gcryCipherHd,
                                GCRY_CIPHER_SALSA20,

@@ -111,7 +111,7 @@ int main(void){
 
   int passphraseSize = sizeof(char) * 20;
   int destinationSize = sizeof(char) * 20;
-  int messageSize = sizeof(char) * 20;
+  int messageSize = sizeof(char) * 120;
   int idStringSize = sizeof(char) * 20;
 
   while(1){
@@ -119,7 +119,7 @@ int main(void){
     disp_messages(name);
     printf("================\n");
 
-    printf("r to read, w to write, or q to quit\n");
+    printf("r to read, w to write or q to quit\n");
     getUserInput(sel, selSize);
 
     if((strcmp(sel, "r")== 0)) {
@@ -132,7 +132,7 @@ int main(void){
       printf("Enter a passphrase:\n");
       getUserInput(passphrase, passphraseSize);
 
-      printf("\nMessage:\n%s\n\n", get_message(name, id, passphrase));
+      printf("\nMessage %d:\n%s\n\n", id, get_message(name, id, passphrase));
     }else if(strcmp(sel, "w") == 0){
 
       printf("Enter user to send message to:\n");
@@ -165,8 +165,9 @@ int main(void){
 
 //returns a correctly sized return string
 void getUserInput(char* result, int size){
-  printf("Enter %d character(s) maximimum. Any additional characters will be ignored.\n", size - 1); // -1 to ignore the newline character
+  printf("Enter %d character(s) maximimum. Any additional characters will be ignored.\n", size - 1); // -1 to ignore the newline character that is always present
   fgets(result, size, stdin);
+  printf("\n");
   result[strcspn(result, "\n")] = 0;
   //printf("%d", strlen(result));
   if(strlen(result) == size - 1){ //only clear input buffer when input was too long

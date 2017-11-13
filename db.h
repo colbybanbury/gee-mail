@@ -19,7 +19,7 @@ int get_message_count(char* user);
 
 char* get_message(char* name, int id, char* passphrase);
 /*
-  return the message contents for a message with this id num, username, passphrase, and returns the appropriate message if this fails*/
+  return the message contents for a message with this id num, username, passphrase, and returns the appropriate message if any part fails*/
 
 
 int send_message(char* sender, char* receiver, char* message, char* passphrase);
