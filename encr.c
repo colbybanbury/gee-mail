@@ -84,9 +84,6 @@ char* encrypt(char* message, char* passphrase){
   printf("nonce is ");
   for(i = 0; i <8; i++){
   	printf("%02X", (unsigned char)nonce[i]);
-  	if(nonce[i] == 0){
-  		nonce[i] = 2;
-  	}
   }
   nonce[8] = 0;
   printf("\n");
